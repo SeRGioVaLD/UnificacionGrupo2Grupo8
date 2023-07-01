@@ -1,0 +1,213 @@
+{% extends 'base-user.html' %}
+{% block title %}Cotizaciones{% endblock %}
+
+{% block content %}
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/components/cotizaciones.css')}}">
+
+    <div class="content-cuadro">
+        <div class="cuadro">
+            <!-- Titulo -->
+            <div>
+                <h1 class="titulo">Contratos</h1>
+            </div>
+
+            <!-- Pestañas -->
+
+            <div class="tabs">
+                <ul>
+                    {% if tipo == "personal" %}
+                        <li class="option option-active" id="crear-tab" onclick="mostrarTabla('crear')">
+                            Crear Contratos
+                        </li>
+                        <li class="option" id="pendientes-tab" onclick="mostrarTabla('pendientes')" >
+                            Contratos Pendientes
+                        </li>
+                        <li class="option option-desactive" id="registrados-tab" onclick="mostrarTabla('registrados')" >
+                            Contratos Registrados
+                        </li>
+                    {% else %}
+                        <li class="option option-active" id="pendientes-tab" onclick="mostrarTabla('pendientes')" >
+                            Contratos Pendientes
+                        </li>
+                        <li class="option " id="registrados-tab" onclick="mostrarTabla('registrados')" >
+                            Contratos Registrados
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% if tipo == "personal" %}
+                <!-- Tabla de CREAR-->
+                <div id="tabla-crear" class="tabla-cotizaciones">
+                    <table class="table is-bordered is-hoverable is-dark has-text-white">
+                        <thead>
+                            <tr>
+                                <th>ID Cotizacion</th>
+                                <th>Fecha Cotizacion</th>
+                                <th>Importe</th>
+                                <th>Crear</th>
+                            </tr>
+                        </thead>
+                        <tbody>                    
+                            {% for cotizacion in cotizaciones %}
+                            <tr>
+                                <td>{{cotizacion.id_solicitud_cotizacion}}</td>
+                                <td>{{cotizacion.fecha_cotizacion}}</td>
+                                <td>S/.{{cotizacion.importe}}</td>
+                                <td>
+                                    <a 
+                                        href="{{url_for('routes.crear_contrato',tipo = tipo, id = cotizacion.id_personal, id_solicitud_cotizacion = cotizacion.id_solicitud_cotizacion)}}" 
+                                        method="POST"
+                                        class="button" data-toggle="tooltip" title="Crear">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/crear_contrato.png') }} ">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                    
+                <!-- Tabla de FIRMAR -->
+                <div id="tabla-pendientes" class="tabla-cotizaciones" style="display: none;">
+                    <table class="table is-bordered is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID Contrato</th>
+                                <th>ID Cotizacion</th>
+                                <th>F. Creacion</th>
+                                <th>F Firma Soli.</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_pendientes %}
+                            <tr>
+                                <td>{{contrato.id_contrato}}</td>
+                                <td>{{contrato.id_solicitud_cotizacion}}</td>
+                                <td>{{contrato.fecha_contrato}}</td>
+                                <td>{{contrato.fecha_firma_solicitante}}</td>
+                                <td>
+                                    <a 
+                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = contrato.id_solicitante,id_contrato = contrato.id_contrato)}}" 
+                                        method="POST"
+                                        class="button" data-toggle="tooltip" 
+                                        title="Firmar">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/firmar_contrato.png') }} ">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tabla de REGISTRADOS -->
+                <div id="tabla-registrados" class="tabla-cotizaciones" style="display: none;">
+                    <table class="table is-bordered is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID Contrato</th>
+                                <th>ID Personal</th>
+                                <th>ID Solicitante</th>
+                                <th>F Registro</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_registrados%}
+                            <tr>
+                                <td>{{contrato.id_contrato}}</td>
+                                <td>{{contrato.id_personal}}</td>
+                                <td>{{contrato.id_solicitante}}</td>
+                                <td>{{contrato.fecha_registro}}</td>
+                                <td>
+                                    
+                                    <a 
+                                        class="button" data-toggle="tooltip" 
+                                        title="Firmar">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/moneda.png') }} ">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <script src="{{ url_for('static', filename='js/contratos_personal.js') }}"></script>
+            {% else %}
+                <!-- Tabla de FIRMAR -->
+                <div id="tabla-pendientes" class="tabla-cotizaciones">
+                    <table class="table is-bordered is-hoverable is-dark has-text-white">
+                        <thead>
+                            <tr>
+                                <th>ID Contrato</th>
+                                <th>ID Cotizacion</th>
+                                <th>F. Creacion</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_pendientes %}
+                            <tr>
+                                <td>{{contrato.id_contrato}}</td>
+                                <td>{{contrato.id_solicitud_cotizacion}}</td>
+                                <td>{{contrato.fecha_firma_solicitante}}</td>
+                                <td>
+                                    <a  
+                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = contrato.id_solicitante,id_contrato = contrato.id_contrato)}}" 
+                                        method="POST"
+                                        class="button" data-toggle="tooltip" 
+                                        title="Firmar">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/firmar_contrato.png') }} ">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tabla de REGISTRADOS -->
+                <div id="tabla-registrados" class="tabla-cotizaciones" style="display: none;">
+                    <table class="table is-bordered is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID Contrato</th>
+                                <th>ID Personal</th>
+                                <th>ID Solicitante</th>
+                                <th>F Registro</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_registrados%}
+                            <tr>
+                                <td>{{contrato.id_contrato}}</td>
+                                <td>{{contrato.id_personal}}</td>
+                                <td>{{contrato.id_solicitante}}</td>
+                                <td>{{contrato.fecha_registro}}</td>
+                                <td>
+                                    <a 
+                                        class="button" data-toggle="tooltip" 
+                                        title="Firmar">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/moneda.png') }} ">
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <script src="{{ url_for('static', filename='js/contratos_solicitante.js') }}"></script>
+            {% endif %}
+            
+        </div>
+    </div>
+
+
+{% endblock %}

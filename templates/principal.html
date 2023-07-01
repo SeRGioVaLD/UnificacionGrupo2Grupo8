@@ -1,0 +1,29 @@
+{%extends 'base-user.html'%}
+{%block title%}Principal{%endblock%}
+
+{%block content%}
+<link rel="stylesheet" href="{{url_for('static',filename="css/components/principal.css")}}">
+<link rel="stylesheet" href="{{url_for('static',filename="css/components/tareas/tarea_container.css")}}">
+
+<div class="container-tareas">
+    {% if tipo == "personal" %}
+        <div class="box">
+            <a href="{{ url_for('cotizaciones.cotizaciones', id=id) }}"> <!-- Corregir aquí -->
+                <img src="https://img.lovepik.com/background/20211021/medium/lovepik-currency-sign-dollar-background-image_400105748.jpg">
+                <div class="capa-tarea">
+                    <h2>Cotizaciones</h2>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+    <div class="box">
+        <a href="{{ url_for('routes.contratos', tipo = tipo, id=id) }}" method = "POST"> <!-- Corregir aquí -->
+            <img src="https://img.lovepik.com/background/20211021/medium/lovepik-currency-sign-dollar-background-image_400105748.jpg">
+            <div class="capa-tarea">
+                <h2>Contratos</h2>
+            </div>
+        </a>
+    </div>
+</div>
+  
+{%endblock%}

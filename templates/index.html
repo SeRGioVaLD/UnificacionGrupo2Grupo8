@@ -1,0 +1,38 @@
+{%extends 'base.html'%}
+{%block title%}Inicio sesión{%endblock%}
+{%block content%}
+<link rel="stylesheet" href="{{url_for('static',filename="css/components/forms/form_style.css")}}">
+<link rel="stylesheet" href="{{url_for('static',filename="css/components/forms/button_style.css")}}">
+<link rel="stylesheet" href="{{url_for('static',filename="css/components/login.css")}}">
+    <div class="login-form">
+        <form class="form" method="POST" action="{{ url_for('index.index') }}">
+            <h3>INICIO DE SESIÓN</h3>
+            <div class="textInput">
+                <input type="text" name="email" required>
+                <label class="input__lbl">
+                    <span class="txt-lbl">Email</span>
+                </label>
+            </div>
+            <div class="textInput">
+                <input type="password" name="password" required>
+                <label class="input__lbl">
+                    <span class="txt-lbl">Contraseña</span>
+                </label>
+            </div>
+            <div class="form-btn">
+                <a href="#" onclick="submitForm()" class="btn-neon">
+                    <span id="span1"></span>
+                    <span id="span2"></span>
+                    <span id="span3"></span>
+                    <span id="span4"></span>
+                    Ingresar
+                </a>
+            </div>
+        </form>
+    </div>
+<script>
+    function submitForm() {
+        document.querySelector('.form').submit();
+    }
+</script>
+{%endblock%}

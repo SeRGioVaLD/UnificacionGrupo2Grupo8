@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Open Sans', sans-serif;
+}
+.fondo {
+	background: url(https://www.xtrafondos.com/descargar.php?id=3183&resolucion=3840x1633);
+	background-size: 100vw 100vh;
+	background-repeat: no-repeat;
+	width: 100%;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	z-index: -1;
+	filter: brightness(0.7); /* Ajusta el valor para cambiar el brillo */
+}
+.skewed {
+	border-top: 1px solid #fff;
+	height: 2px;
+	max-width: 95%;
+	padding: 0;
+	margin: 0 auto 0 auto;
+}
+
+footer {
+	color: white;
+	font-size: 15px;
+	height: 45px;
+	width: 100%;
+	text-align: center;
+	line-height: 45px; /* Ajusta la altura verticalmente */
+	
+}
+  
+
+.contrato_caja{
+    position: relative;
+    padding: 10px;
+    max-height: 9.25in;
+    font-family: 'Consolas', monospace;
+    background-color: rgb(255, 255, 255, 0.8);
+    border: 2px solid #000000;
+    overflow: auto;
+    text-align: justify;
+}
+
+.bajo_contrato_caja{
+    position: relative;
+    padding: 10px;
+    max-height: 9.25in;
+    font-family: 'Consolas', monospace;
+    border: 2px solid #000000;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.form-label{
+    color: antiquewhite;
+    font-weight: bold;
+}
+
+input.linea-texto[readonly] {
+    text-transform: uppercase;
+    font-weight: bold;
+    height: 80%;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border: 1 px solid bold;
+    background-color: rgb(218, 215, 215);
+}
+
+.negrita {
+    font-weight: bold;
+}
+
+.text_ind1{
+    padding-left: 20px;
+}
+
+.text_ind2{
+    padding-left: 40px;
+}
+
+.text_ind3{
+    padding-left: 60px;
+}   
+
+.card{
+    border: 2px solid #000000;
+    max-width: 300px;
+    width: 300px;
+    height: 325px;
+    object-fit: contain;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.card-img-top {
+    border: 2px solid #000000;
+    max-width: 300px;
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    display: block;
+}
+
+.card-text {
+    height: 25px;
+}
+
+.row {
+    margin-bottom: 20px; /* Ajusta este valor según tus necesidades */
+    text-align: center;
+}
+
+a.button_subir_data {
+    background-color: #0da73b;
+    display: inline-block;
+    height: 50px;
+    width: 100px;
+    border-radius: 10px;
+  }
+  
+a.button_subir_data img.tabla-icon {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    }
+
+a.button_firmar {
+    background-color: #052c65;
+    display: inline-block;
+    height: 50px;
+    width: 100px;
+    border-radius: 10px;
+  }
+  
+a.button_firmar img.tabla-icon {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}

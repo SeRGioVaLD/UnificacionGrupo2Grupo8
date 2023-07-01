@@ -1,0 +1,14 @@
+body{
+    display: flex;
+    flex-direction: column;
+    
+}
+.login-form{
+    padding-top: 72px;
+    padding-bottom: 72px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: calc(100% - 30px);
+}

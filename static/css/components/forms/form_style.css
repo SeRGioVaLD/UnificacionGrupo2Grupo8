@@ -1,0 +1,75 @@
+	.form{
+		width: 60%;
+		max-width: 50%;
+		border: 2px solid #ffffff;
+		box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.833);
+		background-color: #041a2f;
+		border-radius: 20px;
+		padding: 70px;
+		padding-bottom: 50px;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.form h3{
+		color: #ffffff;
+		font-size: 30px;
+		padding-bottom: 30px;
+		text-align: center;
+	}
+	.textInput{
+		width: 100%;
+		max-width: 300px;
+		padding-top: 30px;
+		position: relative;
+		overflow: hidden;
+	}
+	.textInput input{
+		width: 100%;
+		height: 100%;
+		background: none;
+		color: #ffffff;
+		padding-top: 40px;
+		border: none;
+		outline: 0px;
+		font-size: 17px;
+	}
+	.textInput .input__lbl{
+		position: absolute;
+		font-size: 17px;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-bottom: 1px solid #c7c7c7;
+	}
+	.textInput .input__lbl:after{
+		content: '';
+		position: absolute;
+		left: 0;
+		bottom: -1px;
+		width: 100%;
+		height: 100%;
+		border-bottom: 3px solid #fff;
+		transform: translateX(-100%);
+		transition: all 0.3s ease;
+	}
+	.txt-lbl{
+		position: absolute;
+		bottom: 5px;
+		left: 0;
+		transition: all 0.3s ease;
+		color: #c7c7c7;
+	}
+	.textInput input:focus + .input__lbl .txt-lbl,.textInput input:valid + .input__lbl .txt-lbl{
+		transform: translateY(-150%);
+		font-size: 18px;
+		color: #fff;
+	}
+	.textInput input:focus + .input__lbl:after, .textInput input:valid + .input__lbl:after{
+		transform: translateX(0%);
+	}
+	

@@ -1,0 +1,23 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+
+# Flask
+instance/
+
+# Logs
+*.log
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# Other
+*.swp
+*.swo
+.DS_Store

@@ -1,0 +1,235 @@
+{%extends 'base-user.html'%}
+{%block title%}Detalles solicitud{%endblock%}
+{%block header%}
+
+{%endblock%}
+{%block content%}
+<link rel="stylesheet" href="{{url_for('static',filename='css/components/cotizacion.css')}}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+{% if cotizacion_realizada == "Realizada" %}
+<!--Boton atras-->
+<form action="{{ url_for('cotizaciones.cotizaciones', id = id) }}" method="POST" class="retroceder-container">
+    <button type="submit" style="background: none;">
+        <img src=" {{ url_for('static',filename='img/atras.png') }} " class="retroceder-icon">
+        <input type="hidden" name="btn-atras" value="{{ 'completadas' }}">
+    </button>
+</form>
+{% endif %}
+<!--Formulario-->
+<form class="container-form">
+    <!--INFO PERSONAL-->
+    <div class="form-apartado" id="info_personal">
+        <div class="apartado-titulo">INFORMACIÓN PERSONAL</div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Nombre: </span>
+            </label>
+            <input type="text" name="nombre" required value="{{ data.nombres_apellido }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Número de documento: </span>
+            </label>
+            <input type="text" name="nrodocumento" required value="{{ data.ndocumento }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Rol: </span>
+            </label>
+            <input type="text" name="rol" required value="{{ data.rol }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Correo: </span>
+            </label>
+            <input type="text" name="correo" required value="{{ data.correo }}" readonly>
+        </div>
+    </div>
+    <!--PREDIO-->
+    <div class="form-apartado" id="info_predio">
+        <div class="apartado-titulo">INFORMACIÓN DEL PREDIO</div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Nombre: </span>
+            </label>
+            <input type="text" name="nombre_predio" required value="{{ data.nombre_predio }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Dirección: </span>
+            </label>
+            <input type="text" name="direccion_predio" required value="{{ data.direccion_predio }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Tipo de predio: </span>
+            </label>
+            <input type="text" name="tipo_predio" required value="{{ data.tipo_predio }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">RUC: </span>
+            </label>
+            <input type="text" name="ruc_predio" required value="{{ data.ruc_predio }}" readonly>
+        </div>
+    </div>
+    <!--SERVICIOS-->
+    <div class="form-apartado" id="info_servicio">
+        <div class="apartado-titulo">INFORMACIÓN DE SERVICIOS</div>
+        {% if data.id_servicio == 1 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de administracion: </span>
+            </label>
+            <input type="text" name="cant_administracion" required value="{{ data.cant_administracion }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de personal de limpieza: </span>
+            </label>
+            <input type="text" name="cant_plimpieza" required value="{{ data.cant_plimpieza }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de jardineros: </span>
+            </label>
+            <input type="text" name="cant_jardineria" required value="{{ data.cant_jardineria }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de vigilantes: </span>
+            </label>
+            <input type="text" name="cant_vigilantes" required value="{{ data.cant_vigilantes }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Tipo de servicio: </span>
+            </label>
+            <input type="text" name="tipo_servicio" required value="{{ data.tipo_servicio }}" readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 2 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de personal de limpieza: </span>
+            </label>
+            <input type="text" name="cant_plimpieza" required value="{{ data.cant_plimpieza }}" readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 3 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de jardineros: </span>
+            </label>
+            <input type="text" name="cant_jardineria" required value="{{ data.cant_jardineria }}" readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 4 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Cantidad de vigilantes: </span>
+            </label>
+            <input type="text" name="cant_vigilantes" required value="{{ data.cant_vigilantes }}" readonly>
+        </div>
+        {% endif %}
+    </div>
+
+    <!--COTIZACION-->
+    <div class="form-apartado" id="info_cotizacion">
+        <div class="apartado-titulo">INFORMACIÓN DE LA COTIZACION</div>
+        {% if data.id_servicio == 1 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por administrador: </span>
+            </label>
+            <input type="text" required name="importe_administracion" value="{{ data.cant_administracion*500 }}"
+                readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por personal de limpieza: </span>
+            </label>
+            <input type="text" name="importe_plimpieza" required value="{{ data.cant_plimpieza*300 }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por jardineros: </span>
+            </label>
+            <input type="text" name="importe_jardineria" required value="{{ data.cant_jardineria*300 }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por vigilantes: </span>
+            </label>
+            <input type="text" name="importe_vigilantes" required value="{{ data.cant_vigilantes*400 }}" readonly>
+        </div>
+        <div class="textInput">
+            <label class="input__lbl">
+                {% if cotizacion_realizada == "No realizada" %}
+                <span class="txt-lbl">Importe TOTAL a cotizar: </span>
+                {% else %}
+                <span class="txt-lbl">Importe TOTAL cotizado: </span>
+                {% endif %}
+            </label>
+            <input type="text" name="importe_vigilantes" required
+                value="{{ (data.cant_vigilantes*400)+( data.cant_jardineria*300)+(data.cant_plimpieza*300)+(data.cant_administracion*500) }}"
+                readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 2 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por personal de limpieza: </span>
+            </label>
+            <input type="text" name="importe_plimpieza" required value="{{ data.cant_plimpieza*300 }}" readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 3 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por jardineros: </span>
+            </label>
+            <input type="text" name="importe_jardineria" required value="{{ data.cant_jardineria*300 }}" readonly>
+        </div>
+        {% endif %}
+
+        {% if data.id_servicio == 4 %}
+        <div class="textInput">
+            <label class="input__lbl">
+                <span class="txt-lbl">Importe por vigilantes: </span>
+            </label>
+            <input type="text" name="importe_vigilantes" required value="{{ data.cant_vigilantes*400 }}" readonly>
+        </div>
+        {% endif %}
+    </div>
+
+</form>
+{% if cotizacion_realizada == "No realizada" %}
+<!-- Botones de Aceptar y Rechazar -->
+<div class="buttons button-container">
+    <form action="{{ url_for('cotizaciones.aceptar') }}" method="POST">
+        <button type="submit" class="button" style="margin-right: 10px; margin-top: 10px;">
+            <input type="hidden" name="aceptar__id_solicitud" value="{{ data.id_solicitud }}">
+            <span class="material-icons">
+                done
+            </span>
+            Registrar
+        </button>
+    </form>
+    <form action="{{ url_for('cotizaciones.rechazar') }}" method="POST">
+        <button type="submit" class="button" style="margin-left: 10px; margin-top: 10px;">
+            <input type="hidden" name="rechazar__id_solicitud" value="{{ data.id_solicitud }}">
+            <span class="material-icons">
+                clear
+            </span>
+            Cancelar
+        </button>
+    </form>
+</div>
+{% endif %}
+{%endblock%}
