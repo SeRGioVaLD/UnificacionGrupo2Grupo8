@@ -297,23 +297,13 @@ def generar_pdf (id_contrato,tipo,referencia):
     ruta_destino = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
     ruta_destino = ruta_destino.replace("\\", "/")
     ruta_destino = ruta_destino + "/"+nombre_contrato+".pdf"
-    
-    css=[
-        "https://fonts.googleapis.com/css?family=Consolas",
-        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js",
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
-        url_for('static',filename='css/components/cotizaciones.css'),
-        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css",
-        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js",
-        url_for('static',filename='css/cstyle.css')
-        
-    ]
-    
-    pdfkit.from_string(html,ruta_destino,css = css, options=opciones, configuration = config)
+
+    pdfkit.from_file(ruta_template,ruta_destino,options=opciones)
     webbrowser.open(ruta_destino)
+    
     # try:
         
-    #     pdfkit.from_file(ruta_template,ruta_destino,options=opciones)
+    # pdfkit.from_string(html,ruta_destino, options=opciones, configuration = config)    
         
     # except:
     #     print("BB")
