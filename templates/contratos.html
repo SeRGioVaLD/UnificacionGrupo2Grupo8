@@ -1,10 +1,14 @@
 {% extends 'base-user.html' %}
 {% block title %}Cotizaciones{% endblock %}
 
+
 {% block content %}
+    {% include "partials/_message.html" %}
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/components/cotizaciones.css')}}">
+
+   
 
     <div class="content-cuadro">
         <div class="cuadro">
@@ -14,7 +18,6 @@
             </div>
 
             <!-- Pestañas -->
-
             <div class="tabs">
                 <ul>
                     {% if tipo == "personal" %}
@@ -58,7 +61,7 @@
                                 <td>S/.{{cotizacion.importe}}</td>
                                 <td>
                                     <a 
-                                        href="{{url_for('routes.crear_contrato',tipo = tipo, id = cotizacion.id_personal, id_solicitud_cotizacion = cotizacion.id_solicitud_cotizacion)}}" 
+                                        href="{{url_for('routes.crear_contrato',tipo = tipo, id = id, id_solicitud_cotizacion = cotizacion.id_solicitud_cotizacion)}}" 
                                         method="POST"
                                         class="button" data-toggle="tooltip" title="Crear">
                                         <img class="tabla-icon" src=" {{ url_for('static',filename='img/crear_contrato.png') }} ">
@@ -70,6 +73,14 @@
                     </table>
                 </div>
                     
+
+
+
+
+
+
+
+
                 <!-- Tabla de FIRMAR -->
                 <div id="tabla-pendientes" class="tabla-cotizaciones" style="display: none;">
                     <table class="table is-bordered is-hoverable">
@@ -91,7 +102,7 @@
                                 <td>{{contrato.fecha_firma_solicitante}}</td>
                                 <td>
                                     <a 
-                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = contrato.id_solicitante,id_contrato = contrato.id_contrato)}}" 
+                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = id,id_contrato = contrato.id_contrato)}}" 
                                         method="POST"
                                         class="button" data-toggle="tooltip" 
                                         title="Firmar">
@@ -103,6 +114,16 @@
                         </tbody>
                     </table>
                 </div>
+
+
+
+
+
+
+
+
+
+
 
                 <!-- Tabla de REGISTRADOS -->
                 <div id="tabla-registrados" class="tabla-cotizaciones" style="display: none;">
@@ -158,7 +179,7 @@
                                 <td>{{contrato.fecha_firma_solicitante}}</td>
                                 <td>
                                     <a  
-                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = contrato.id_solicitante,id_contrato = contrato.id_contrato)}}" 
+                                        href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = id,id_contrato = contrato.id_contrato)}}" 
                                         method="POST"
                                         class="button" data-toggle="tooltip" 
                                         title="Firmar">

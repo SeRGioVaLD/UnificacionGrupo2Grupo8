@@ -1,3 +1,4 @@
+
 {% extends 'base-user.html' %}
 {% block title %}Cotizaciones{% endblock %}
 
@@ -197,15 +198,15 @@
     
                 <div class="datos_firmante">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6">     
                             <div class="card text-center">
                                 <img class="card-img-top" src="{{url_for('static',filename=firma_solicitante_link)}}" alt="Imagen 1">
                                 <div class="card-body">
                                     <p class="card-text">FIRMA SOLICITANTE</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                        </div>                  
+                        <div class="col-md-6">                 
                             <div class="card text-center">
                                 <img class="card-img-top" src="{{url_for('static',filename=huella_solicitante_link)}}" alt="Imagen 2">
                                 <div class="card-body">
@@ -245,8 +246,9 @@
             </div>
 
             <div class="bajo_contrato_caja">
-                <form enctype="multipart/form-data" method="POST">
-                    {% if accion == "firmar" %}
+                
+                {% if accion == "firmar" %}
+                    <form enctype="multipart/form-data" method="POST">
                         <div class="mb-3">
                             <label for="firma" class="form-label">INGRESE SU FIRMA</label>
                             <input accept="image/*" class="form-control" type="file" id="firma" name="firma" required>
@@ -275,12 +277,18 @@
                                     
                                 </div>
 
+                                
+                                
                                 {% if tipo == "solicitante" %}
 
                                     {% if firma_solicitante_link != "img/cache/Vacio.png" and huella_solicitante_link != "img/cache/Vacio.png" %}
                                         
                                         <div class="col">
-                                            <a class="button_firmar" title="Firmar">
+                                            <label class="form-label">{{id_contrato}}</label>
+                                            <a 
+                                                href="{{url_for('routes.firmar_contrato', tipo=tipo, id = id , id_contrato = id_contrato, referencia = referencia)}}" 
+                                                method="POST"
+                                                class="button_firmar" title="Firmar">
                                                 <img class="tabla-icon" src="{{url_for('static', filename='img/firmar_contrato.png')}}">
                                             </a>
                                         </div>
@@ -291,8 +299,13 @@
 
                                     {% if firma_personal_link != "img/cache/Vacio.png" and huella_personal_link != "img/cache/Vacio.png" %}
                                         
+                                        
                                         <div class="col">
-                                            <a class="button_firmar" title="Firmar">
+                                            <label class="form-label">{{id_contrato}}</label>
+                                            <a 
+                                                href="{{url_for('routes.firmar_contrato', tipo=tipo, id = id , id_contrato = id_contrato, referencia = referencia)}}" 
+                                                method="POST"
+                                                class="button_firmar" title="Firmar">
                                                 <img class="tabla-icon" src="{{url_for('static', filename='img/firmar_contrato.png')}}">
                                             </a>
                                         </div>
@@ -304,9 +317,10 @@
                             </div>
 
                         </div>
+                    </form>
 
-                    {% endif %}                        
-                </form>
+                {% endif %}                        
+                
 
 
                 

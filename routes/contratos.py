@@ -16,10 +16,15 @@ from models.solicitante import Solicitante
 from models.contrato import Contrato
 from datetime import datetime
 
+import jinja2
+import pdfkit
+import webbrowser
+
 from utils.clean_cache import borrar_cache
 from utils.gen_route import route
 
 import os
+from datetime import datetime,timedelta
 
 from Google.ObtenerTokens import obtener_token
 from Google.Carpetas import crear_carpeta
@@ -78,7 +83,6 @@ def contratos(tipo,id):
             Contrato.fecha_registro != None,
         ).all()
 
-
     return render_template(
         'contratos.html',
         tipo = tipo,
@@ -94,7 +98,6 @@ def crear_contrato(tipo,id,id_solicitud_cotizacion):
     cotizacion = SolicitudCotizacion.query.filter(
         SolicitudCotizacion.id_solicitud_cotizacion == id_solicitud_cotizacion
     ).all()
-    
     
     solicitud = Solicitud.query.filter(
         Solicitud.id_solicitud == cotizacion[0].id_solicitud    
@@ -123,7 +126,6 @@ def crear_contrato(tipo,id,id_solicitud_cotizacion):
     
     id_contrato = contrato_final[0].id_contrato
     
-    
     crear_carpeta_contratos(id_contrato,id_solicitud_cotizacion,id_personal,id_solicitante)
     
     return redirect(url_for('routes.contratos', id=id, tipo = tipo))
@@ -144,22 +146,52 @@ def crear_carpeta_contratos(id_contrato,id_solicitud_cotizacion,id_personal,id_s
     return 
 
 
-
-@routes.route('/<accion>/<tipo>/<id>/<id_contrato>', methods=['POST','GET'])
+@routes.route('/contrato/<accion>/<tipo>/<id>/<id_contrato>', methods=['POST','GET'])
 def mostrar_contrato(accion,tipo,id,id_contrato):
     borrar_cache(["Vacio.png"])
     
-    contrato = Contrato.query.get(id_contrato)
+    print("---------------------------------------------"+tipo,id,id_contrato)
+    
+    data = obtener_datos_contrato(id_contrato)
+    
+    data.update({
+        'accion': accion,
+        'tipo': tipo,
+        'id': id,
+        'id_contrato': id_contrato
+    })
 
+    
+    return render_template('contrato.html', **data)
+    
+@routes.route('/firmar/<tipo>/<id>/<id_contrato>/<referencia>', methods=['POST','GET'])
+def firmar_contrato(tipo,id,id_contrato,referencia):
+    
+    contrato = Contrato.query.get(id_contrato)
+    
+    fecha_actual = datetime.now().date()
+
+    if tipo == "solicitante":
+        contrato.fecha_firma_solicitante = fecha_actual
+    else:
+        contrato.fecha_firma_personal = fecha_actual  
+        contrato.fecha_registro = fecha_actual 
+        generar_pdf (id_contrato,tipo,referencia) 
+
+    db.session.commit()
+    
+    flash("CONTRADO FIRMADO CORRECTAMENTE!!!")
+    
+    return redirect(url_for('routes.contratos', tipo = tipo, id = id)) 
+
+
+def obtener_datos_contrato(id_contrato):
+    contrato = Contrato.query.get(id_contrato)
     personal = Personal.query.get(contrato.id_personal)
-    
     solicitante = Solicitante.query.get(contrato.id_solicitante)
-    
     cotizacion = SolicitudCotizacion.query.get(contrato.id_solicitud_cotizacion)
-    
     solicitud = Solicitud.query.get(cotizacion.id_solicitud)
     servicio = Servicio.query.get(solicitud.id_servicio)
-    
     predio = Predio.query.get(solicitud.id_predio)
     ubigeo_predio = Ubigeo.query.get(predio.idubigeo)
     tipo_predio = TipoPredio.query.get(predio.id_tipo_predio)
@@ -183,45 +215,112 @@ def mostrar_contrato(accion,tipo,id,id_contrato):
     tipo_documento_solicitante = TipoDocumento.query.get(persona_solicitante.id_tipo_documento)
     
     referencia = str(id_contrato)+"-"+str(cotizacion.id_solicitud_cotizacion)+"-"+str(personal.id_personal)+"-"+str(solicitante.id_solicitante)  
-
-    firma_solicitante_link,huella_solicitante_link,firma_personal_link,huella_personal_link = cargar_documentos(accion,tipo,referencia)
     
-    return render_template(
-        'contrato.html',
-        referencia = referencia,
-        accion = accion,
-        tipo=tipo,
-        id=id,
-        id_contrato = id_contrato,
-        contrato = contrato,
-        personal = personal,
-        solicitante = solicitante,
-        cotizacion = cotizacion,
-        solicitud = solicitud,
-        servicio = servicio,
-        predio = predio,
-        ubigeo_predio = ubigeo_predio,
-        tipo_predio = tipo_predio,
-        predio_area_comun = predio_area_comun,
-        area_comun = area_comun,
-        
-        persona_personal = persona_personal,
-        rol_personal = rol_personal,
-        tipo_documento_personal = tipo_documento_personal,
-        
-        persona_solicitante = persona_solicitante,
-        rol_solicitante = rol_solicitante,
-        tipo_documento_solicitante = tipo_documento_solicitante,
-        
-        firma_solicitante_link = firma_solicitante_link,
-        huella_solicitante_link = huella_solicitante_link,
-        firma_personal_link = firma_personal_link,
-        huella_personal_link = huella_personal_link
-    )
+    firma_solicitante_link, huella_solicitante_link, firma_personal_link, huella_personal_link = cargar_documentos(referencia)
+    
+    data = {
+        'referencia': referencia,
+        'contrato': contrato,
+        'personal': personal,
+        'solicitante': solicitante,
+        'cotizacion': cotizacion,
+        'solicitud': solicitud,
+        'servicio': servicio,
+        'predio': predio,
+        'ubigeo_predio': ubigeo_predio,
+        'tipo_predio': tipo_predio,
+        'predio_area_comun': predio_area_comun,
+        'area_comun': area_comun,
+        'persona_personal': persona_personal,
+        'rol_personal': rol_personal,
+        'tipo_documento_personal': tipo_documento_personal,
+        'persona_solicitante': persona_solicitante,
+        'rol_solicitante': rol_solicitante,
+        'tipo_documento_solicitante': tipo_documento_solicitante,
+        'firma_solicitante_link': firma_solicitante_link,
+        'huella_solicitante_link': huella_solicitante_link,
+        'firma_personal_link': firma_personal_link,
+        'huella_personal_link': huella_personal_link
+    }
+    
+    return data
+
+    
     
 
 
-@routes.route('/<accion>/<tipo>/<id>/<id_contrato>/<referencia>', methods=['POST','GET'])
+
+def generar_pdf (id_contrato,tipo,referencia):
+    
+    accion = "ver_contrato"
+    
+    borrar_cache(["Vacio.png"])
+    
+    data = obtener_datos_contrato(id_contrato)
+    
+    data.update({
+        'accion': accion,
+        'tipo': tipo,
+        'id': id,
+        'id_contrato': id_contrato
+    })
+    
+        
+    carpeta_template = route("DSW-ProyectoCondosa-main","\\templates")
+    
+    ruta_template = carpeta_template.replace("\\", "/")
+    
+    nombre_template = "contrato.html"
+    
+    print(ruta_template)
+    print(nombre_template)
+    
+    env = jinja2.Environment(loader = jinja2.FileSystemLoader(ruta_template))
+    template = env.get_template(nombre_template)
+    html = render_template(nombre_template, **data)
+    
+    opciones = {
+        'page-size': 'A4',
+        'margin-top': '10mm',
+        'margin-right': '10mm',
+        'margin-bottom': '10mm',
+        'margin-left': '10mm',
+    }
+    
+    nombre_contrato = "contrato-"+referencia
+    
+    ruta_wkhtmltopdf = route("DSW-ProyectoCondosa-main","\\\wkhtmltox\\bin\\wkhtmltopdf.exe")
+    ruta_wkhtmltopdf = ruta_wkhtmltopdf.replace("\\", "/")
+    
+    config = pdfkit.configuration(wkhtmltopdf = ruta_wkhtmltopdf)
+    
+    ruta_destino = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
+    ruta_destino = ruta_destino.replace("\\", "/")
+    ruta_destino = ruta_destino + "/"+nombre_contrato+".pdf"
+    
+    css=[
+        "https://fonts.googleapis.com/css?family=Consolas",
+        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
+        url_for('static',filename='css/components/cotizaciones.css'),
+        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js",
+        url_for('static',filename='css/cstyle.css')
+        
+    ]
+    
+    pdfkit.from_string(html,ruta_destino,css = css, options=opciones, configuration = config)
+    webbrowser.open(ruta_destino)
+    # try:
+        
+    #     pdfkit.from_file(ruta_template,ruta_destino,options=opciones)
+        
+    # except:
+    #     print("BB")
+        
+    
+
+@routes.route('/subir/<accion>/<tipo>/<id>/<id_contrato>/<referencia>', methods=['POST','GET'])
 def subir_datos(accion,tipo,id,id_contrato,referencia):
     
     print(accion, tipo, id, id_contrato, referencia)
@@ -235,9 +334,8 @@ def subir_datos(accion,tipo,id,id_contrato,referencia):
     carpeta_personal = "datos_personal_contrato-"+referencia
     
     carpeta_cache = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
+
     carpeta_cache = carpeta_cache.replace("\\", "/")
-    
-    
     
     if tipo == "solicitante":
         nombre_firma = ("firma_solicitante_"+referencia+".png")
@@ -272,14 +370,12 @@ def subir_datos(accion,tipo,id,id_contrato,referencia):
             subir_archivo(nombre_firma,ruta_firma,tipos,carpeta_personal)
             subir_archivo(nombre_huella,ruta_huella,tipos,carpeta_personal)
         
-    
     borrar_cache(["Vacio.png"])
     
     return redirect(url_for('routes.mostrar_contrato',accion=accion, tipo = tipo, id=id, id_contrato = id_contrato))
 
 
 def verificar_existencia(nom_archivo,tipos):
-    
     token_resultado,nom_resultado =  obtener_token(nom_archivo,tipos)
     
     if token_resultado and nom_resultado:
@@ -288,8 +384,7 @@ def verificar_existencia(nom_archivo,tipos):
         return False
     
     
-def cargar_documentos(accion,tipo,referencia):
-    
+def cargar_documentos(referencia):
     tipos = ["image/png","image/jpeg"]
          
     nombre_firma_solicitante = "firma_solicitante_"+referencia+".png"
@@ -298,6 +393,11 @@ def cargar_documentos(accion,tipo,referencia):
     nombre_huella_personal = "huella_personal_"+referencia+".png"
     
     rutas = []
+    
+    carpeta_cache = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
+
+    carpeta_cache = carpeta_cache.replace("\\", "/")
+    
     
     nombres_archivos = [nombre_firma_solicitante, nombre_huella_solicitante, nombre_firma_personal, nombre_huella_personal]
 
@@ -308,6 +408,8 @@ def cargar_documentos(accion,tipo,referencia):
             print("NOMBREEE FINALLLLL- ",nombre_final)
             
             ruta_final = "img/cache/"+nombre_final
+            
+            print(ruta_final)
             
             rutas.append(ruta_final)
         else:

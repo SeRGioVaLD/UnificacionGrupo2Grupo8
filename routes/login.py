@@ -11,7 +11,7 @@ def index(): #esta función debe coincidir con el url_for del html (base)
         password = request.form['password']
 
         data_prueba = {
-            "antonyctmre@gmail.com":{
+            "antonytqm@gmail.com":{
                 "password": "qwerty",
                 "nombre": "Antony",
                 "apellido": "Vargas",
