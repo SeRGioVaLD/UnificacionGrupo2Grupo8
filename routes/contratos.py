@@ -192,6 +192,7 @@ def mostrar_contrato(accion,tipo,id,id_contrato):
         accion = accion,
         tipo=tipo,
         id=id,
+        id_contrato = id_contrato,
         contrato = contrato,
         personal = personal,
         solicitante = solicitante,
@@ -220,8 +221,10 @@ def mostrar_contrato(accion,tipo,id,id_contrato):
     
 
 
-@routes.route('/<accion>/<tipo>/<id>/<id_contrato>', methods=['POST','GET'])
+@routes.route('/<accion>/<tipo>/<id>/<id_contrato>/<referencia>', methods=['POST','GET'])
 def subir_datos(accion,tipo,id,id_contrato,referencia):
+    
+    print(accion, tipo, id, id_contrato, referencia)
     
     firma = request.files['firma']
     huella = request.files['huella']
@@ -229,19 +232,22 @@ def subir_datos(accion,tipo,id,id_contrato,referencia):
     tipos = ["image/png","image/jpeg"]
     
     carpeta_solicitante= "datos_solicitante_contrato-"+referencia
-    carpeta_personal = "datos_spersonal_contrato-"+referencia
+    carpeta_personal = "datos_personal_contrato-"+referencia
     
     carpeta_cache = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
+    carpeta_cache = carpeta_cache.replace("\\", "/")
     
-    firma.save(os.path.join(carpeta_cache, nombre_firma))
-    huella.save(os.path.join(carpeta_cache, nombre_huella))
+    
     
     if tipo == "solicitante":
         nombre_firma = ("firma_solicitante_"+referencia+".png")
         nombre_huella = ("huella_solicitante_"+referencia+".png")
         
+        firma.save(os.path.join(carpeta_cache, nombre_firma))
+        huella.save(os.path.join(carpeta_cache, nombre_huella))
+        
         ruta_firma = carpeta_cache+"/"+nombre_firma
-        ruta_huella = carpeta_cache+"/"+nombre_firma
+        ruta_huella = carpeta_cache+"/"+nombre_huella
     
         if verificar_existencia(nombre_firma,tipos) and verificar_existencia(nombre_huella,tipos):
             reemplazar_archivo(nombre_firma,ruta_firma,tipos)
@@ -251,17 +257,20 @@ def subir_datos(accion,tipo,id,id_contrato,referencia):
             subir_archivo(nombre_huella,ruta_huella,tipos,carpeta_solicitante)
     else:
         nombre_firma = ("firma_personal_"+referencia+".png")
-        nombre_huella = ("firma_personal_"+referencia+".png")
+        nombre_huella = ("huella_personal_"+referencia+".png")
+        
+        firma.save(os.path.join(carpeta_cache, nombre_firma))
+        huella.save(os.path.join(carpeta_cache, nombre_huella))
     
         ruta_firma = carpeta_cache+"/"+nombre_firma
-        ruta_huella = carpeta_cache+"/"+nombre_firma
+        ruta_huella = carpeta_cache+"/"+nombre_huella
     
         if verificar_existencia(nombre_firma,tipos) and verificar_existencia(nombre_huella,tipos):
             reemplazar_archivo(nombre_firma,ruta_firma,tipos)
             reemplazar_archivo(nombre_huella,ruta_huella,tipos)
         else:
-            subir_archivo(nombre_firma,ruta_firma,tipos,carpeta_solicitante)
-            subir_archivo(nombre_huella,ruta_huella,tipos,carpeta_solicitante)
+            subir_archivo(nombre_firma,ruta_firma,tipos,carpeta_personal)
+            subir_archivo(nombre_huella,ruta_huella,tipos,carpeta_personal)
         
     
     borrar_cache(["Vacio.png"])
@@ -280,40 +289,31 @@ def verificar_existencia(nom_archivo,tipos):
     
     
 def cargar_documentos(accion,tipo,referencia):
-         
-    ruta_firma_solicitante = "img/cache/Vacio.png"
-    ruta_huella_solicitante = "img/cache/Vacio.png"
-    ruta_firma_personal = "img/cache/Vacio.png"
-    ruta_huella_personal = "img/cache/Vacio.png"
     
     tipos = ["image/png","image/jpeg"]
+         
+    nombre_firma_solicitante = "firma_solicitante_"+referencia+".png"
+    nombre_huella_solicitante = "huella_solicitante_"+referencia+".png"
+    nombre_firma_personal = "firma_personal_"+referencia+".png"
+    nombre_huella_personal = "huella_personal_"+referencia+".png"
     
-    if accion == "firmar" and tipo == "solicitante":
-        return ruta_firma_solicitante,ruta_huella_solicitante,ruta_firma_personal,ruta_huella_personal
-    else:   
-        nombres_firmas_solicitante = [("firma_solicitante_"+referencia+".png"),("firma_solicitante_"+referencia+".jpg"),("firma_solicitante_"+referencia+".jpeg")] 
-        nombres_huella_solicitante = [("huella_solicitante_"+referencia+".png"),("huella_solicitante_"+referencia+".jpg"),("huella_solicitante_"+referencia+".jpeg")]
-        
-        nombre_final_firma_solicitante = descargar_archivo(nombres_firmas_solicitante,tipos)
-        nombre_final_huella_solicitante = descargar_archivo(nombres_huella_solicitante,tipos)
-        
-        ruta_firma_solicitante = "img/cache/"+nombre_final_firma_solicitante
-        ruta_huella_solicitante = "img/cache/"+nombre_final_huella_solicitante
-        
-        if accion == "cargar":
-            nombres_firmas_personal = [("firma_personal_"+referencia+".png"),("firma_personal_"+referencia+".jpg"),("firma_personal_"+referencia+".jpeg")] 
-            nombres_huella_personal = [("huella_personal_"+referencia+".png"),("huella_personal_"+referencia+".jpg"),("huella_personal_"+referencia+".jpeg")]
-            
-            nombre_final_firma_personal = descargar_archivo(nombres_firmas_personal,tipos)
-            nombre_final_huella_personal = descargar_archivo(nombres_huella_personal,tipos)
-            
-            ruta_firma_personal= "img/cache/"+ nombre_final_firma_personal
-            ruta_huella_personal = "img/cache/"+nombre_final_huella_personal
-        
-        return ruta_firma_solicitante,ruta_huella_solicitante,ruta_firma_personal,ruta_huella_personal
-            
+    rutas = []
+    
+    nombres_archivos = [nombre_firma_solicitante, nombre_huella_solicitante, nombre_firma_personal, nombre_huella_personal]
 
-
+    for archivo in nombres_archivos:
+        if verificar_existencia(archivo,tipos):
+            print(archivo)
+            nombre_final = descargar_archivo([archivo], tipos)
+            print("NOMBREEE FINALLLLL- ",nombre_final)
+            
+            ruta_final = "img/cache/"+nombre_final
+            
+            rutas.append(ruta_final)
+        else:
+            rutas.append("img/cache/Vacio.png")
+        
+    return rutas[0],rutas[1],rutas[2],rutas[3]
 
         
     

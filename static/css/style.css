@@ -128,7 +128,7 @@ input.linea-texto[readonly] {
     text-align: center;
 }
 
-a.button_subir_data {
+.button_subir_data {
     background-color: #0da73b;
     display: inline-block;
     height: 50px;
@@ -136,13 +136,13 @@ a.button_subir_data {
     border-radius: 10px;
   }
   
-a.button_subir_data img.tabla-icon {
+.button_subir_data img.tabla-icon {
     height: 100%;
     width: 100%;
     object-fit: contain;
     }
 
-a.button_firmar {
+.button_firmar {
     background-color: #052c65;
     display: inline-block;
     height: 50px;
@@ -150,7 +150,7 @@ a.button_firmar {
     border-radius: 10px;
   }
   
-a.button_firmar img.tabla-icon {
+.button_firmar img.tabla-icon {
     height: 100%;
     width: 100%;
     object-fit: contain;

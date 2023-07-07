@@ -245,51 +245,76 @@
             </div>
 
             <div class="bajo_contrato_caja">
-                {% if accion == "firmar" %}
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">INGRESE SU FIRMA</label>
-                        <input accept="image/*" class="form-control" type="file" id="firma" data-stakeholder="Firma" required>
-                    </div>
-                
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">INGRESE SU HUELLA</label>
-                        <input accept="image/*" class="form-control" type="file" id="huella" data-stakeholder="Huella" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="row">
-                            <div class="col">
-                                <a class="button_subir_data" title="Subir datos">
-                                    <img class="tabla-icon" src="{{url_for('static', filename='img/subir_datos.png')}}">
-                                </a>
-                            </div>
-                            {% if tipo == "solicitante" %}
-                                {% if firma_solicitante_link != "img/cache/Vacio.png" and huella_solicitante_link != "img/cache/Vacio.png" %}
-                                    <div class="col">
-                                        <a class="button_firmar" title="Firmar">
-                                            <img class="tabla-icon" src="{{url_for('static', filename='img/crear_contrato.png')}}">
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                {% if firma_personal_link != "img/cache/Vacio.png" and huella_personal_link != "img/cache/Vacio.png" %}
-                                    <div class="col">
-                                        <a class="button_firmar" title="Firmar">
-                                            <img class="tabla-icon" src="{{url_for('static', filename='img/crear_contrato.png')}}">
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
+                <form enctype="multipart/form-data" method="POST">
+                    {% if accion == "firmar" %}
+                        <div class="mb-3">
+                            <label for="firma" class="form-label">INGRESE SU FIRMA</label>
+                            <input accept="image/*" class="form-control" type="file" id="firma" name="firma" required>
                         </div>
-                    </div>
-                {% endif %}
-                    
-                <a 
-                    class="button_regresar" data-toggle="tooltip" title="Crear">
-                    <img class="tabla-icon" src=" {{ url_for('static',filename='img/crear_contrato.png') }} ">
-                </a>
-            </div>
+                
+                        <div class="mb-3">
+                            <label for="huella" class="form-label">INGRESE SU HUELLA</label>
+                            <input accept="image/*" class="form-control" type="file" id="huella" name="huella" required>
+                        </div>
 
+                        
+
+                        <div class="mb-3">
+
+                            <div class="row">
+
+                                <div class="col">
+
+                                    <button 
+                                            class="button_subir_data" 
+                                            title="Subir datos" 
+                                            formaction="{{url_for('routes.subir_datos', accion=accion, tipo=tipo, id=id, id_contrato=id_contrato, referencia = referencia)}}"
+                                        >
+                                        <img class="tabla-icon" src="{{url_for('static', filename='img/subir_datos.png')}}">
+                                    </button>
+                                    
+                                </div>
+
+                                {% if tipo == "solicitante" %}
+
+                                    {% if firma_solicitante_link != "img/cache/Vacio.png" and huella_solicitante_link != "img/cache/Vacio.png" %}
+                                        
+                                        <div class="col">
+                                            <a class="button_firmar" title="Firmar">
+                                                <img class="tabla-icon" src="{{url_for('static', filename='img/firmar_contrato.png')}}">
+                                            </a>
+                                        </div>
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    {% if firma_personal_link != "img/cache/Vacio.png" and huella_personal_link != "img/cache/Vacio.png" %}
+                                        
+                                        <div class="col">
+                                            <a class="button_firmar" title="Firmar">
+                                                <img class="tabla-icon" src="{{url_for('static', filename='img/firmar_contrato.png')}}">
+                                            </a>
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}                        
+                </form>
+
+
+                
+                <a class="button_regresar" title="Atras">
+                    <img class="tabla-icon" src="{{url_for('static', filename='img/atras.png')}}">
+                </a>
+
+            </div>
             
         </div>
     </div>

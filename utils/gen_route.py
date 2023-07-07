@@ -20,6 +20,6 @@ def route(destino, extension):
     else:
         resultado = resultado + extension
     
-        resultado = resultado.repalce("\\", "/")
+        resultado = resultado.replace("\\", "/")
     
         return resultado
