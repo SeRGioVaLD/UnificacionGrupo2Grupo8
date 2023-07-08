@@ -13,9 +13,10 @@ class Solicitud(db.Model):
     cant_plimpieza = db.Column(db.Integer)
     cant_administracion = db.Column(db.Integer)
     cant_jardineria = db.Column(db.Integer)
+    fecha_solicitud = db.Column(db.Date)
     def __init__(self, id_solicitud, id_predio, id_solicitante, id_servicio, area_predio,
                  num_casas, cant_acomunes, area_acomunes, cant_vigilantes, cant_plimpieza,cant_administracion,
-                 cant_jardineria):
+                 cant_jardineria,fecha_solicitud):
         self.id_solicitud = id_solicitud
         self.id_predio = id_predio
         self.id_solicitante = id_solicitante
@@ -28,3 +29,4 @@ class Solicitud(db.Model):
         self.cant_plimpieza = cant_plimpieza
         self.cant_administracion = cant_administracion
         self.cant_jardineria = cant_jardineria
+        self.fecha_solicitud = fecha_solicitud

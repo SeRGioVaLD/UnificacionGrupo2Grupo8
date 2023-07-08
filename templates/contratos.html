@@ -145,11 +145,12 @@
                                 <td>{{contrato.id_solicitante}}</td>
                                 <td>{{contrato.fecha_registro}}</td>
                                 <td>
-                                    
                                     <a 
+                                        href="{{url_for('routes.mostrar_contrato',accion = "ver_contrato", tipo = tipo, id = id,id_contrato = contrato.id_contrato)}}" 
+                                        method="POST"
                                         class="button" data-toggle="tooltip" 
                                         title="Firmar">
-                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/moneda.png') }} ">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/ojo.png') }} ">
                                     </a>
                                 </td>
                             </tr>
@@ -176,7 +177,7 @@
                             <tr>
                                 <td>{{contrato.id_contrato}}</td>
                                 <td>{{contrato.id_solicitud_cotizacion}}</td>
-                                <td>{{contrato.fecha_firma_solicitante}}</td>
+                                <td>{{contrato.fecha_contrato}}</td>
                                 <td>
                                     <a  
                                         href="{{url_for('routes.mostrar_contrato',accion = "firmar", tipo = tipo, id = id,id_contrato = contrato.id_contrato)}}" 
@@ -213,9 +214,11 @@
                                 <td>{{contrato.fecha_registro}}</td>
                                 <td>
                                     <a 
+                                        href="{{url_for('routes.mostrar_contrato',accion = "ver_contrato", tipo = tipo, id = id,id_contrato = contrato.id_contrato)}}" 
+                                        method="POST"
                                         class="button" data-toggle="tooltip" 
                                         title="Firmar">
-                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/moneda.png') }} ">
+                                        <img class="tabla-icon" src=" {{ url_for('static',filename='img/ojo.png') }} ">
                                     </a>
                                 </td>
                             </tr>

@@ -282,7 +282,6 @@
                                 {% if firma_solicitante_link != "img/cache/Vacio.png" and huella_solicitante_link != "img/cache/Vacio.png" %}
                                     
                                     <div class="col">
-                                        <label class="form-label">{{id_contrato}}</label>
                                         <a 
                                             href="{{url_for('routes.firmar_contrato', tipo=tipo, id = id , id_contrato = id_contrato, referencia = referencia)}}" 
                                             method="POST"
@@ -322,7 +321,10 @@
 
 
             
-            <a class="button_regresar" title="Atras">
+            <a 
+                href="{{url_for('routes.contratos', tipo=tipo, id = id)}}" 
+                method="POST"
+                class="button_regresar" title="Atras">
                 <img class="tabla-icon" src="{{url_for('static', filename='img/atras.png')}}">
             </a>
 

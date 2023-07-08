@@ -1,4 +1,4 @@
-from flask import Blueprint,render_template, request, redirect, url_for, flash, session
+from flask import Blueprint,render_template, request, redirect, url_for, flash, session, make_response
 
 from models.tipoPredio import TipoPredio
 from models.ubigeo import Ubigeo
@@ -16,7 +16,7 @@ from models.solicitante import Solicitante
 from models.contrato import Contrato
 from datetime import datetime
 
-import jinja2
+from jinja2 import Environment, FileSystemLoader
 import pdfkit
 import webbrowser
 
@@ -106,10 +106,15 @@ def crear_contrato(tipo,id,id_solicitud_cotizacion):
     id_personal = id
     id_solicitante = solicitud[0].id_solicitante
     
+    fecha_actual = datetime.now().date()
+    fecha_actual_str = fecha_actual.strftime("%Y-%m-%d")
+    
+    print("FECHAAAAAAAAAAA: ",fecha_actual)
+    
     contrato = Contrato(id_solicitud_cotizacion,
                         id_personal,
                         id_solicitante,
-                        datetime.now().date(), 
+                        fecha_actual_str, 
                         None,
                         None,
                         None,
@@ -245,16 +250,10 @@ def obtener_datos_contrato(id_contrato):
     
     return data
 
-    
-    
-
-
-
 def generar_pdf (id_contrato,tipo,referencia):
+    borrar_cache(["Vacio.png"])
     
     accion = "ver_contrato"
-    
-    borrar_cache(["Vacio.png"])
     
     data = obtener_datos_contrato(id_contrato)
     
@@ -265,21 +264,14 @@ def generar_pdf (id_contrato,tipo,referencia):
         'id_contrato': id_contrato
     })
     
-        
-    carpeta_template = route("DSW-ProyectoCondosa-main","\\templates")
-    
-    ruta_template = carpeta_template.replace("\\", "/")
-    
-    nombre_template = "contrato.html"
-    
-    print(ruta_template)
-    print(nombre_template)
-    
-    env = jinja2.Environment(loader = jinja2.FileSystemLoader(ruta_template))
-    template = env.get_template(nombre_template)
+    nombre_template = "partials/_contrato_partial.html"
     html = render_template(nombre_template, **data)
     
+    
+    print(html)
+    
     opciones = {
+        'enable-local-file-access': '',
         'page-size': 'A4',
         'margin-top': '10mm',
         'margin-right': '10mm',
@@ -287,28 +279,30 @@ def generar_pdf (id_contrato,tipo,referencia):
         'margin-left': '10mm',
     }
     
-    nombre_contrato = "contrato-"+referencia
-    
-    ruta_wkhtmltopdf = route("DSW-ProyectoCondosa-main","\\\wkhtmltox\\bin\\wkhtmltopdf.exe")
-    ruta_wkhtmltopdf = ruta_wkhtmltopdf.replace("\\", "/")
-    
-    config = pdfkit.configuration(wkhtmltopdf = ruta_wkhtmltopdf)
-    
-    ruta_destino = route("DSW-ProyectoCondosa-main","\\static\\img\\cache")
+    nombre_contrato = "contrato-"+referencia+".pdf"
+    ruta_destino = route("Desktop","")
+    ruta_destino = ruta_destino + "\\"+nombre_contrato
     ruta_destino = ruta_destino.replace("\\", "/")
-    ruta_destino = ruta_destino + "/"+nombre_contrato+".pdf"
+    
+    ruta_wkhtmltopdf = route("DSW-ProyectoCondosa-main","\\wkhtmltox\\bin\\wkhtmltopdf.exe")
+    
+    #ruta_wkhtmltopdf = ruta_wkhtmltopdf.replace("\\", "/")
+    
+    config = pdfkit.configuration(wkhtmltopdf=ruta_wkhtmltopdf)
+    
+    print(ruta_destino)
+    
+    pdfkit.from_string(html, ruta_destino, options=opciones, configuration=config) 
+    
+    #response = make_response(pdf)
+    #response.headers["Content-Type"] = "application/pdf"
+    
+    #response.headers["Content-Disposition"] = "inline; filename={{nombre_contrato}}"
+    #return response
 
-    pdfkit.from_file(ruta_template,ruta_destino,options=opciones)
-    webbrowser.open(ruta_destino)
-    
-    # try:
-        
-    # pdfkit.from_string(html,ruta_destino, options=opciones, configuration = config)    
-        
-    # except:
-    #     print("BB")
-        
-    
+
+
+
 
 @routes.route('/subir/<accion>/<tipo>/<id>/<id_contrato>/<referencia>', methods=['POST','GET'])
 def subir_datos(accion,tipo,id,id_contrato,referencia):
